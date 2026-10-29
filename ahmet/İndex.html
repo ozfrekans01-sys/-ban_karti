@@ -1,1 +1,234 @@
 
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#164f8b">
+  <title>IBAN Bilgi Kartı</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      color: #10213d;
+      background: linear-gradient(
+        145deg, #edf5fc, #f8fafc, #e8f1fb
+      );
+    }
+
+    .card {
+      width: 100%;
+      max-width: 600px;
+      padding: 30px 24px;
+      background: #ffffff;
+      border: 1px solid #d7e4f1;
+      border-radius: 20px;
+      box-shadow: 0 14px 42px rgba(21, 65, 111, 0.13);
+      text-align: center;
+    }
+
+    .icon {
+      font-size: 44px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 25px;
+      color: #164f8b;
+    }
+
+    .description {
+      margin: 0 0 24px;
+      color: #60758f;
+      font-size: 15px;
+    }
+
+    .iban-label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-align: left;
+    }
+
+    .iban {
+      padding: 16px;
+      margin-bottom: 18px;
+      border: 1px solid #dbe5ef;
+      border-radius: 12px;
+      background: #f5f8fc;
+      font-size: clamp(14px, 3.5vw, 18px);
+      font-weight: bold;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    button {
+      width: 100%;
+      min-height: 54px;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: #164f8b;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0f3e70;
+    }
+
+    button:focus-visible {
+      outline: 3px solid #f4c64e;
+      outline-offset: 3px;
+    }
+
+    #status {
+      min-height: 24px;
+      margin: 14px 0 0;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .success {
+      color: #187044;
+    }
+
+    .error {
+      color: #a33a2b;
+    }
+
+    #fallback {
+      display: none;
+      width: 100%;
+      min-height: 60px;
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid #9bb6d1;
+      border-radius: 8px;
+      font-size: 16px;
+      overflow-wrap: anywhere;
+    }
+
+    .note {
+      margin-top: 20px;
+      color: #758397;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="card">
+    <div class="icon">🏦</div>
+
+    <h1>IBAN Bilgi Kartı</h1>
+
+    <p class="description">
+      Banka hesap bilgileri
+    </p>
+
+    <span class="iban-label">IBAN Numarası</span>
+
+    <!-- Buraya kendi IBAN numaranı yaz -->
+    <div class="iban" id="ibanText">
+      TR00 0000 0000 0000 0000 0000 00
+    </div>
+
+    <button type="button" id="copyButton">
+      📋 IBAN'ı Kopyala
+    </button>
+
+    <p id="status" role="status" aria-live="polite"></p>
+
+    <textarea
+      id="fallback"
+      aria-label="Kopyalanacak IBAN"
+      readonly
+      spellcheck="false"
+    ></textarea>
+
+    <p class="note">
+      Kopyala düğmesine basarak IBAN numarasını
+      panoya aktarabilirsiniz.
+    </p>
+  </main>
+
+  <script>
+    const copyButton = document.getElementById("copyButton");
+    const ibanText = document.getElementById("ibanText");
+    const status = document.getElementById("status");
+    const fallback = document.getElementById("fallback");
+
+    // Görüntülenen IBAN'daki boşlukları kaldırır.
+    function getIBAN() {
+      return ibanText.textContent.trim().replace(/\s+/g, "");
+    }
+
+    function showStatus(message, type) {
+      status.textContent = message;
+      status.className = type || "";
+    }
+
+    async function copyIBAN() {
+      const iban = getIBAN();
+
+      if (!iban) {
+        showStatus("Kopyalanacak IBAN bulunamadı.", "error");
+        return;
+      }
+
+      copyButton.disabled = true;
+      copyButton.textContent = "Kopyalanıyor...";
+      fallback.style.display = "none";
+
+      try {
+        // Modern tarayıcılarda panoya kopyalama.
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(iban);
+        } else {
+          throw new Error("Clipboard API kullanılamıyor.");
+        }
+
+        showStatus("✓ IBAN başarıyla kopyalandı!", "success");
+      } catch (error) {
+        // Otomatik kopyalama engellendiyse
+        // IBAN'ı seçilebilir alanda göster.
+        fallback.value = iban;
+        fallback.style.display = "block";
+        fallback.focus();
+        fallback.select();
+
+        showStatus(
+          "Otomatik kopyalama engellendi. Seçili IBAN'ı kopyalamayı deneyin.",
+          "error"
+        );
+      } finally {
+        copyButton.disabled = false;
+        copyButton.textContent = "📋 IBAN'ı Kopyala";
+      }
+    }
+
+    copyButton.addEventListener("click", copyIBAN);
+  </script>
+
+</body>
+</html>
