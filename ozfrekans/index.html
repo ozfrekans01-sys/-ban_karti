@@ -1,79 +1,42 @@
 <!DOCTYPE html>
-<html lang="tr" class="scroll-smooth">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ÖZFREKANS | Ahmet Akgöz - Evreni Anla, Kendini Keşfet</title>
-    <meta name="description" content="ÖZFREKANS - Evren, Düşünce ve Maneviyat ekseninde kendinizi keşfedin. Ahmet Akgöz ile yaşamınıza anlam katın.">
+    <meta name="description" content="ÖZFREKANS - Evren, Düşünce ve Maneviyat ekseninde kendinizi keşfedin.">
     
     <!-- Google Fonts & Lucide Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        gold: {
-                            300: '#FDE68A',
-                            400: '#FACC15',
-                            500: '#EAB308',
-                            600: '#CA8A04',
-                            glow: '#FFE57F'
-                        },
-                        cosmic: {
-                            deep: '#030014',
-                            card: 'rgba(15, 10, 38, 0.65)',
-                            border: 'rgba(212, 175, 55, 0.25)',
-                            accent: '#8B5CF6'
-                        }
-                    },
-                    fontFamily: {
-                        cinzel: ['Cinzel', 'serif'],
-                        sans: ['Plus Jakarta Sans', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <!-- Tone.js for Ambient Audio Synthesizer -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
     <style>
+        /* BASE & RESET */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             background-color: #030014;
             color: #f3f4f6;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             overflow-x: hidden;
             width: 100%;
+            line-height: 1.6;
         }
 
-        .glass-panel {
-            background: rgba(15, 10, 38, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-        }
-
-        .glass-card {
-            background: rgba(20, 14, 48, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            transition: all 0.4s ease;
-        }
-
-        @media (min-width: 768px) {
-            .glass-card:hover {
-                border-color: rgba(255, 215, 0, 0.5);
-                box-shadow: 0 0 30px rgba(234, 179, 8, 0.25);
-                transform: translateY(-8px);
-            }
+        /* TYPOGRAPHY & GRADIENTS */
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
         }
 
         .text-gold-gradient {
@@ -82,18 +45,7 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .glow-gold {
-            box-shadow: 0 0 25px rgba(234, 179, 8, 0.35);
-        }
-
-        .glow-circle {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(90px);
-            pointer-events: none;
-            z-index: 0;
-        }
-
+        /* CANVAS BACKGROUND */
         #cosmic-canvas {
             position: fixed;
             top: 0;
@@ -104,237 +56,624 @@
             pointer-events: none;
         }
 
-        ::-webkit-scrollbar {
-            width: 6px;
+        /* GLASSMOBISM PANELS */
+        .glass-panel {
+            background: rgba(15, 10, 38, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
-        ::-webkit-scrollbar-track {
-            background: #030014;
+
+        .glass-card {
+            background: rgba(20, 14, 48, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #2e1065;
-            border-radius: 3px;
+
+        @media (min-width: 769px) {
+            .glass-card:hover {
+                border-color: rgba(255, 215, 0, 0.5);
+                box-shadow: 0 0 25px rgba(234, 179, 8, 0.2);
+                transform: translateY(-5px);
+            }
+        }
+
+        /* CONTAINER & LAYOUT */
+        .container {
+            width: 100%;
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* HEADER / NAVBAR */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 12px 0;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-img-wrapper {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            padding: 1px;
+            background: linear-gradient(135deg, #CA8A04, #FACC15);
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .logo-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .brand-titles {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            line-height: 1.1;
+        }
+
+        .brand-subtitle {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: #9ca3af;
+            text-transform: uppercase;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-audio {
+            background: rgba(46, 16, 101, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #FDE68A;
+            padding: 8px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-audio:hover {
+            border-color: #FACC15;
+            background: rgba(234, 179, 8, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #CA8A04, #FACC15);
+            color: #000;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
+            transition: opacity 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-outline {
+            background: rgba(15, 10, 38, 0.7);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: #FDE68A;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.3s ease;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            min-height: 100vh;
+            padding-top: 130px;
+            padding-bottom: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #FDE68A;
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3.5vw, 2.2rem);
+            font-weight: 400;
+            display: block;
+            margin-top: 6px;
+        }
+
+        .slogan-card {
+            margin: 24px auto;
+            max-width: 650px;
+            padding: 20px;
+            border-radius: 16px;
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            color: #fef3c7;
+        }
+
+        .hero-desc {
+            max-width: 580px;
+            margin: 0 auto 32px auto;
+            color: #d1d5db;
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 576px) {
+            .hero-buttons {
+                flex-direction: row;
+                max-width: none;
+                justify-content: center;
+            }
+        }
+
+        /* CORE PILLARS (SÜTUNLAR) */
+        .section-padding {
+            padding: 80px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: clamp(1.6rem, 4vw, 2.5rem);
+            margin-bottom: 12px;
+        }
+
+        .section-divider {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #EAB308, transparent);
+            margin: 0 auto 16px auto;
+            border-radius: 2px;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .pillars-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .pillar-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .pillar-1 .pillar-icon { background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: #c084fc; }
+        .pillar-2 .pillar-icon { background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.3); color: #facc15; }
+        .pillar-3 .pillar-icon { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; }
+
+        .pillar-tag {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .pillar-1 .pillar-tag { color: #c084fc; }
+        .pillar-2 .pillar-tag { color: #facc15; }
+        .pillar-3 .pillar-tag { color: #34d399; }
+
+        .pillar-title {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+        }
+
+        .pillar-desc {
+            font-size: 0.85rem;
+            color: #d1d5db;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        /* FREQUENCY CARD DRAWER */
+        .card-box-wrapper {
+            max-width: 720px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .frequency-card {
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 24px 0;
+            padding: 24px;
+        }
+
+        .card-quote {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: #fef3c7;
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        .card-badge {
+            font-size: 0.7rem;
+            color: #facc15;
+            background: rgba(234, 179, 8, 0.1);
+            border: 1px solid rgba(234, 179, 8, 0.2);
+            padding: 4px 12px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* CONTACT SECTION */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            max-width: 640px;
+            margin: 0 auto 40px auto;
+        }
+
+        @media (min-width: 576px) {
+            .contact-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .contact-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .contact-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(234, 179, 8, 0.1);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #facc15;
+            flex-shrink: 0;
+        }
+
+        .contact-info {
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .contact-label {
+            font-size: 0.65rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+        }
+
+        .contact-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 30px 0;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        @media (min-width: 576px) {
+            .footer-content {
+                flex-direction: row;
+            }
+        }
+
+        /* RESPONSIVE HIDE UTILITY */
+        @media (max-width: 480px) {
+            .hide-mobile {
+                display: none !important;
+            }
         }
     </style>
 </head>
-<body class="font-sans antialiased text-gray-200 selection:bg-gold-500 selection:text-black">
+<body>
 
-    <!-- Cosmic Background Canvas -->
+    <!-- Dynamic Cosmic Background Canvas -->
     <canvas id="cosmic-canvas"></canvas>
 
-    <!-- Glowing Background Orbs -->
-    <div class="glow-circle w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] bg-purple-900/30 top-[-50px] left-[-50px]"></div>
-    <div class="glow-circle w-[350px] h-[350px] sm:w-[600px] sm:h-[600px] bg-amber-600/15 bottom-0 right-[-50px]"></div>
-
-    <!-- Navigation Bar -->
-    <header class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-gold-500/20 px-4 sm:px-6 py-3">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="#" class="flex items-center gap-2.5 group">
-                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full p-[1px] bg-gradient-to-tr from-gold-600 via-amber-400 to-yellow-200 glow-gold flex items-center justify-center overflow-hidden shrink-0">
-                    <img src="1063.png" alt="ÖzFrekans Logo" class="w-full h-full object-cover rounded-full">
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-cinzel text-base sm:text-xl font-bold tracking-widest text-gold-gradient leading-none mb-1">ÖZFREKANS</span>
-                    <span class="text-[9px] sm:text-[10px] tracking-widest text-gray-400 uppercase">Ahmet Akgöz</span>
-                </div>
-            </a>
-
-            <!-- Ambient Sound Toggle & Contact -->
-            <div class="flex items-center gap-2 sm:gap-4">
-                <button id="audio-toggle" class="px-3 sm:px-4 py-2 rounded-full border border-gold-500/30 bg-purple-950/40 text-[11px] sm:text-xs text-gold-300 flex items-center gap-1.5 hover:border-gold-400 transition-all shadow-lg backdrop-blur-md">
-                    <i data-lucide="volume-x" id="audio-icon" class="w-3.5 h-3.5 text-gold-400 shrink-0"></i>
-                    <span id="audio-text" class="hidden xs:inline sm:inline">432 Hz Modu</span>
-                </button>
-                <a href="#contact" class="hidden md:flex px-5 py-2 rounded-full bg-gradient-to-r from-gold-600 to-amber-500 text-black font-semibold text-xs tracking-wider uppercase hover:opacity-90 transition-all glow-gold">
-                    İletişim
+    <!-- Header / Navbar -->
+    <header class="glass-panel">
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="brand-logo">
+                    <div class="logo-img-wrapper">
+                        <img src="1063.png" alt="ÖzFrekans Logo">
+                    </div>
+                    <div class="brand-titles">
+                        <span class="brand-title font-cinzel text-gold-gradient">ÖZFREKANS</span>
+                        <span class="brand-subtitle">Ahmet Akgöz</span>
+                    </div>
                 </a>
+
+                <div class="nav-actions">
+                    <button id="audio-toggle" class="btn-audio">
+                        <i data-lucide="volume-x" id="audio-icon"></i>
+                        <span id="audio-text" class="hide-mobile">432 Hz Modu</span>
+                    </button>
+                    <a href="#contact" class="btn-primary hide-mobile">İletişim</a>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center pt-28 pb-16 px-4 text-center overflow-hidden">
-        <div class="max-w-4xl mx-auto z-10 w-full">
-            <!-- Badge -->
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border border-gold-500/30 mb-6 sm:mb-8">
-                <i data-lucide="compass" class="w-3.5 h-3.5 text-gold-400 shrink-0"></i>
-                <span class="text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest text-gold-300 font-medium">Bütünsel Yaşam & Kozmik Farkındalık</span>
+    <section class="hero">
+        <div class="container">
+            <div class="badge glass-panel">
+                <i data-lucide="compass" style="width: 14px; color: #facc15;"></i>
+                <span>Bütünsel Yaşam & Kozmik Farkındalık</span>
             </div>
 
-            <!-- Main Title -->
-            <h1 class="font-cinzel text-3xl xs:text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-4 sm:mb-6 leading-tight">
-                <span class="block text-white drop-shadow-lg">ÖZFREKANS</span>
-                <span class="block text-xl xs:text-2xl sm:text-3xl md:text-4xl text-gold-gradient mt-2 font-normal">Ahmet Akgöz</span>
+            <h1 class="hero-title font-cinzel">
+                ÖZFREKANS
+                <span class="hero-subtitle text-gold-gradient font-cinzel">Ahmet Akgöz</span>
             </h1>
 
-            <!-- Slogan Card -->
-            <div class="my-6 sm:my-8 max-w-2xl mx-auto glass-panel p-4 sm:p-6 rounded-2xl border border-gold-500/30 relative overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-r from-gold-500/10 via-transparent to-purple-500/10 opacity-50"></div>
-                <p class="font-cinzel text-base xs:text-lg sm:text-2xl text-amber-100 tracking-wide font-medium relative z-10 leading-relaxed px-2">
-                    "Evreni Anla. Kendini Keşfet. Yaşama Anlam Kat."
-                </p>
+            <div class="slogan-card glass-panel font-cinzel">
+                "Evreni Anla. Kendini Keşfet. Yaşama Anlam Kat."
             </div>
 
-            <p class="text-gray-300 text-sm sm:text-lg max-w-xl mx-auto font-light leading-relaxed mb-8 sm:mb-10 px-2">
+            <p class="hero-desc">
                 Enerji, düşünce gücü ve manevi idrak ekseninde kendi öz titreşiminizi yükseltin. Bilimin ve hikmetin ışığında içsel yolculuğunuza başlayın.
             </p>
 
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full max-w-md sm:max-w-none mx-auto px-4">
-                <a href="#pillars" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-gold-600 via-amber-500 to-gold-400 text-black font-bold tracking-wider text-xs sm:text-sm uppercase shadow-2xl hover:scale-105 transition-transform flex items-center justify-center gap-2 glow-gold">
-                    <i data-lucide="eye" class="w-4 h-4"></i>
+            <div class="hero-buttons">
+                <a href="#pillars" class="btn-primary">
+                    <i data-lucide="eye" style="width: 16px;"></i>
                     Alanları Keşfet
                 </a>
-                <a href="tel:05467748688" class="w-full sm:w-auto px-7 py-3.5 rounded-xl glass-panel border border-gold-500/40 text-gold-300 hover:text-white font-semibold tracking-wider text-xs sm:text-sm uppercase hover:bg-gold-500/10 transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="phone-call" class="w-4 h-4 text-gold-400"></i>
+                <a href="tel:05467748688" class="btn-outline">
+                    <i data-lucide="phone-call" style="width: 16px; color: #facc15;"></i>
                     Bize Ulaşın
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Core Pillars Section (3 Ana Sütun) -->
-    <section id="pillars" class="py-16 sm:py-24 px-4 relative z-10 max-w-7xl mx-auto">
-        <div class="text-center mb-12 sm:mb-16">
-            <h2 class="font-cinzel text-2xl sm:text-4xl font-bold text-gold-gradient mb-3">Üç Ana İçerik Sütunumuz</h2>
-            <div class="w-20 sm:w-24 h-1 bg-gradient-to-r from-transparent via-gold-500 to-transparent mx-auto rounded-full"></div>
-            <p class="text-gray-400 mt-4 max-w-lg mx-auto text-xs sm:text-base px-2">
-                Zihinsel, ruhsal ve evrensel bütünlüğü yakalamanız için tasarlanmış temel rehberlik alanlarımız.
-            </p>
-        </div>
+    <!-- Core Pillars (3 Ana Sütun) -->
+    <section id="pillars" class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title font-cinzel text-gold-gradient">Üç Ana İçerik Sütunumuz</h2>
+                <div class="section-divider"></div>
+                <p style="color: #9ca3af; font-size: 0.85rem;">
+                    Zihinsel, ruhsal ve evrensel bütünlüğü yakalamanız için tasarlanmış temel rehberlik alanlarımız.
+                </p>
+            </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            <!-- EVREN -->
-            <div class="glass-card rounded-2xl p-6 sm:p-8 relative group flex flex-col justify-between">
-                <div>
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-600/30 to-indigo-900/50 border border-purple-500/30 flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform">
-                        <i data-lucide="orbit" class="w-7 h-7 sm:w-8 sm:h-8 text-purple-400"></i>
+            <div class="pillars-grid">
+                <!-- EVREN -->
+                <div class="glass-card pillar-1">
+                    <div class="pillar-icon">
+                        <i data-lucide="orbit"></i>
                     </div>
-                    <span class="text-[11px] uppercase font-semibold text-purple-400 tracking-widest block mb-2">1. Sütun</span>
-                    <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-white mb-3">EVREN</h3>
-                    <p class="text-gray-300 text-xs sm:text-sm leading-relaxed mb-6 font-light">
+                    <span class="pillar-tag">1. Sütun</span>
+                    <h3 class="pillar-title font-cinzel">EVREN</h3>
+                    <p class="pillar-desc">
                         Enerji, titreşim, frekans ve kozmoloji. Evrenin görünmeyen matematiğini ve fizik ötesi yasalarını keşfederek kendi enerjinizi hizalayın.
                     </p>
                 </div>
-                <div class="border-t border-purple-500/20 pt-4 flex items-center justify-between text-xs text-purple-300">
-                    <span>Rezonans & Frekans</span>
-                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </div>
-            </div>
 
-            <!-- DÜŞÜNCE -->
-            <div class="glass-card rounded-2xl p-6 sm:p-8 relative group flex flex-col justify-between border-gold-500/30">
-                <div>
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-amber-600/30 to-yellow-900/50 border border-gold-500/40 flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform">
-                        <i data-lucide="brain" class="w-7 h-7 sm:w-8 sm:h-8 text-gold-400"></i>
+                <!-- DÜŞÜNCE -->
+                <div class="glass-card pillar-2">
+                    <div class="pillar-icon">
+                        <i data-lucide="brain"></i>
                     </div>
-                    <span class="text-[11px] uppercase font-semibold text-gold-400 tracking-widest block mb-2">2. Sütun</span>
-                    <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-gold-gradient mb-3">DÜŞÜNCE</h3>
-                    <p class="text-gray-300 text-xs sm:text-sm leading-relaxed mb-6 font-light">
+                    <span class="pillar-tag">2. Sütun</span>
+                    <h3 class="pillar-title font-cinzel text-gold-gradient">DÜŞÜNCE</h3>
+                    <p class="pillar-desc">
                         İnsan zihni, düşünce alışkanlıkları ve farkındalık. Zihnin çalışma mekanizmasını çözerek olumsuz kalıplardan özgürleşin.
                     </p>
                 </div>
-                <div class="border-t border-gold-500/20 pt-4 flex items-center justify-between text-xs text-gold-300">
-                    <span>Zihinsel Dönüşüm</span>
-                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </div>
-            </div>
 
-            <!-- MANEVİYAT -->
-            <div class="glass-card rounded-2xl p-6 sm:p-8 relative group flex flex-col justify-between">
-                <div>
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-emerald-600/30 to-teal-900/50 border border-emerald-500/30 flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform">
-                        <i data-lucide="heart-handshake" class="w-7 h-7 sm:w-8 sm:h-8 text-emerald-400"></i>
+                <!-- MANEVİYAT -->
+                <div class="glass-card pillar-3">
+                    <div class="pillar-icon">
+                        <i data-lucide="heart-handshake"></i>
                     </div>
-                    <span class="text-[11px] uppercase font-semibold text-emerald-400 tracking-widest block mb-2">3. Sütun</span>
-                    <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-white mb-3">MANEVİYAT</h3>
-                    <p class="text-gray-300 text-xs sm:text-sm leading-relaxed mb-6 font-light">
+                    <span class="pillar-tag">3. Sütun</span>
+                    <h3 class="pillar-title font-cinzel">MANEVİYAT</h3>
+                    <p class="pillar-desc">
                         Allah, yaratılış, şükür, iç huzur ve yaşamın anlamı. Kalbin sükunetini bulacağı derin bir idrak ve teslimiyet yolculuğu.
                     </p>
                 </div>
-                <div class="border-t border-emerald-500/20 pt-4 flex items-center justify-between text-xs text-emerald-300">
-                    <span>Kalbi İdrak</span>
-                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Frequency Card Section -->
+    <section class="section-padding" style="padding-top: 0;">
+        <div class="container">
+            <div class="card-box-wrapper glass-panel" style="padding: 32px 16px; border-radius: 24px;">
+                <i data-lucide="sparkles" style="width: 32px; height: 32px; color: #facc15; margin-bottom: 12px;"></i>
+                <h2 class="font-cinzel" style="font-size: 1.5rem; margin-bottom: 6px;">Günün Özfrekans Mesajı</h2>
+                <p style="color: #9ca3af; font-size: 0.8rem;">Zihninizi ve ruhunuzu bugünün yüksek rezonansına uyumlayın.</p>
+
+                <div class="frequency-card glass-card">
+                    <p id="card-text" class="card-quote font-cinzel">
+                        "Düşünceleriniz evrene gönderdiğiniz davetiyelerdir. Bugün şükür frekansında kalın."
+                    </p>
+                    <span id="card-tag" class="card-badge">528 Hz • Dönüşüm & Şükür</span>
                 </div>
+
+                <button id="draw-card-btn" class="btn-primary" style="margin: 0 auto; cursor: pointer; border: none;">
+                    <i data-lucide="refresh-cw" style="width: 14px;"></i>
+                    Yeni Kart Çek
+                </button>
             </div>
         </div>
     </section>
 
-    <!-- Günün Frekans Kartı -->
-    <section class="py-12 sm:py-16 px-4 max-w-4xl mx-auto relative z-10">
-        <div class="glass-panel rounded-3xl p-6 sm:p-12 text-center border border-gold-500/30 relative overflow-hidden shadow-2xl">
-            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-gold-500/10 rounded-full blur-3xl"></div>
-            
-            <i data-lucide="sparkles" class="w-8 h-8 sm:w-10 sm:h-10 text-gold-400 mx-auto mb-3 animate-bounce"></i>
-            <h2 class="font-cinzel text-xl sm:text-3xl font-bold text-white mb-2">Günün Özfrekans Mesajı</h2>
-            <p class="text-gray-400 text-xs sm:text-sm mb-6 sm:mb-8">Zihninizi ve ruhunuzu bugünün yüksek rezonansına uyumlayın.</p>
-
-            <div id="frequency-card-box" class="glass-card p-5 sm:p-8 rounded-2xl border border-gold-500/20 mb-6 sm:mb-8 min-h-[140px] flex flex-col items-center justify-center">
-                <p id="card-text" class="font-cinzel text-base sm:text-xl text-amber-200 italic mb-3 px-2">
-                    "Düşünceleriniz evrene gönderdiğiniz davetiyelerdir. Bugün şükür frekansında kalın."
+    <!-- Contact & Footer -->
+    <section id="contact" class="section-padding" style="background: rgba(3, 0, 20, 0.95); border-top: 1px solid rgba(212, 175, 55, 0.2);">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title font-cinzel text-gold-gradient">Bizimle İletişime Geçin</h2>
+                <p style="color: #9ca3af; font-size: 0.85rem;">
+                    Sorularınız, seans talepleriniz ve iş birlikleri için doğrudan bana ulaşabilirsiniz.
                 </p>
-                <span id="card-tag" class="text-[11px] sm:text-xs text-gold-400 font-semibold uppercase tracking-widest bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/20">
-                    528 Hz • Dönüşüm & Şükür
-                </span>
             </div>
 
-            <button id="draw-card-btn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold text-xs tracking-wider uppercase hover:opacity-90 transition-all flex items-center justify-center gap-2 mx-auto shadow-lg">
-                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                Yeni Kart Çek
-            </button>
-        </div>
-    </section>
-
-    <!-- İletişim & Alt Bilgi -->
-    <section id="contact" class="py-16 sm:py-20 px-4 relative z-10 border-t border-gold-500/20 bg-cosmic-deep/90 backdrop-blur-xl">
-        <div class="max-w-5xl mx-auto text-center">
-            
-            <h2 class="font-cinzel text-2xl sm:text-3xl font-bold text-gold-gradient mb-3">Bizimle İletişime Geçin</h2>
-            <p class="text-gray-400 text-xs sm:text-sm max-w-md mx-auto mb-10 px-2">
-                Sorularınız, seans talepleriniz ve iş birlikleri için doğrudan bana ulaşabilirsiniz.
-            </p>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto mb-12 sm:mb-16">
+            <div class="contact-grid">
                 <!-- Phone -->
-                <a href="tel:05467748688" class="glass-card p-5 sm:p-6 rounded-2xl flex items-center gap-4 hover:border-gold-400 transition-all group">
-                    <div class="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center group-hover:bg-gold-500 group-hover:text-black transition-colors shrink-0">
-                        <i data-lucide="phone" class="w-5 h-5 text-gold-400 group-hover:text-black"></i>
+                <a href="tel:05467748688" class="glass-card contact-card">
+                    <div class="contact-icon">
+                        <i data-lucide="phone"></i>
                     </div>
-                    <div class="text-left overflow-hidden">
-                        <span class="text-[10px] text-gray-400 uppercase tracking-widest block">Telefon</span>
-                        <span class="font-semibold text-sm sm:text-base text-white group-hover:text-gold-300 transition-colors truncate block">(0546) 774 86 88</span>
+                    <div class="contact-info">
+                        <span class="contact-label">Telefon</span>
+                        <span class="contact-value">(0546) 774 86 88</span>
                     </div>
                 </a>
 
                 <!-- Email -->
-                <a href="mailto:ozfrekans01@gmail.com" class="glass-card p-5 sm:p-6 rounded-2xl flex items-center gap-4 hover:border-gold-400 transition-all group">
-                    <div class="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center group-hover:bg-gold-500 group-hover:text-black transition-colors shrink-0">
-                        <i data-lucide="mail" class="w-5 h-5 text-gold-400 group-hover:text-black"></i>
+                <a href="mailto:ozfrekans01@gmail.com" class="glass-card contact-card">
+                    <div class="contact-icon">
+                        <i data-lucide="mail"></i>
                     </div>
-                    <div class="text-left overflow-hidden">
-                        <span class="text-[10px] text-gray-400 uppercase tracking-widest block">E-Posta</span>
-                        <span class="font-semibold text-xs sm:text-sm text-white group-hover:text-gold-300 transition-colors truncate block">ozfrekans01@gmail.com</span>
+                    <div class="contact-info">
+                        <span class="contact-label">E-Posta</span>
+                        <span class="contact-value">ozfrekans01@gmail.com</span>
                     </div>
                 </a>
             </div>
 
-            <!-- Footer Bottom -->
-            <div class="border-t border-gray-800 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
-                <p>© 2026 ÖZFREKANS - Ahmet Akgöz. Tüm hakları saklıdır.</p>
-                <div class="flex items-center gap-6">
-                    <a href="#pillars" class="hover:text-gold-400 transition-colors">Evren</a>
-                    <a href="#pillars" class="hover:text-gold-400 transition-colors">Düşünce</a>
-                    <a href="#pillars" class="hover:text-gold-400 transition-colors">Maneviyat</a>
+            <footer>
+                <div class="footer-content">
+                    <p>© 2026 ÖZFREKANS - Ahmet Akgöz. Tüm hakları saklıdır.</p>
+                    <div style="display: flex; gap: 16px;">
+                        <a href="#pillars" style="color: #6b7280; text-decoration: none;">Evren</a>
+                        <a href="#pillars" style="color: #6b7280; text-decoration: none;">Düşünce</a>
+                        <a href="#pillars" style="color: #6b7280; text-decoration: none;">Maneviyat</a>
+                    </div>
                 </div>
-            </div>
-
+            </footer>
         </div>
     </section>
 
-    <!-- JavaScript & Interactive Modules -->
+    <!-- INTERACTIVE JAVASCRIPT MODULES -->
     <script>
-        // Initialize Lucide Icons
+        // Lucide Icons
         lucide.createIcons();
 
-        // Canvas Ambient Particle System
+        // Canvas Particle Background
         const canvas = document.getElementById('cosmic-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -346,14 +685,14 @@
         window.addEventListener('resize', resizeCanvas);
 
         const particles = [];
-        const particleCount = window.innerWidth < 768 ? 40 : 80;
+        const particleCount = window.innerWidth < 768 ? 35 : 70;
 
         for (let i = 0; i < particleCount; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                radius: Math.random() * 1.8 + 0.2,
-                alpha: Math.random() * 0.8 + 0.2,
+                radius: Math.random() * 1.5 + 0.3,
+                alpha: Math.random() * 0.7 + 0.3,
                 speedX: (Math.random() - 0.5) * 0.3,
                 speedY: (Math.random() - 0.5) * 0.3
             });
@@ -381,12 +720,11 @@
         }
         animateParticles();
 
-        // 432 Hz Ambient Audio Synthesizer (Tone.js)
+        // 432 Hz Tone.js Audio Synthesizer
         let isPlaying = false;
         let synth = null;
 
         const audioBtn = document.getElementById('audio-toggle');
-        const audioIcon = document.getElementById('audio-icon');
         const audioText = document.getElementById('audio-text');
 
         audioBtn.addEventListener('click', async () => {
@@ -401,20 +739,22 @@
                 synth.start();
 
                 isPlaying = true;
-                audioText.innerText = "Durdur";
-                audioBtn.classList.add('border-gold-400', 'bg-gold-500/20');
+                if (audioText) audioText.innerText = "Durdur";
+                audioBtn.style.borderColor = "#FACC15";
+                audioBtn.style.background = "rgba(234, 179, 8, 0.2)";
             } else {
                 if (synth) {
                     synth.stop();
                     synth.dispose();
                 }
                 isPlaying = false;
-                audioText.innerText = "432 Hz Modu";
-                audioBtn.classList.remove('border-gold-400', 'bg-gold-500/20');
+                if (audioText) audioText.innerText = "432 Hz Modu";
+                audioBtn.style.borderColor = "rgba(212, 175, 55, 0.3)";
+                audioBtn.style.background = "rgba(46, 16, 101, 0.5)";
             }
         });
 
-        // Frequency Card Drawer Data
+        // Daily Card Drawer
         const cards = [
             {
                 quote: '"Düşünceleriniz evrene gönderdiğiniz davetiyelerdir. Bugün şükür frekansında kalın."',
@@ -454,7 +794,7 @@
                 cardTag.innerText = card.tag;
                 cardText.style.opacity = '1';
                 cardTag.style.opacity = '1';
-            }, 300);
+            }, 250);
         });
     </script>
 </body>
