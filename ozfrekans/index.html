@@ -1,1 +1,461 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ÖZFREKANS | Ahmet Akgöz - Evreni Anla, Kendini Keşfet</title>
+    <meta name="description" content="ÖZFREKANS - Evren, Düşünce ve Maneviyat ekseninde kendinizi keşfedin. Ahmet Akgöz ile yaşamınıza anlam katın.">
+    
+    <!-- Google Fonts & Lucide Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            300: '#FDE68A',
+                            400: '#FACC15',
+                            500: '#EAB308',
+                            600: '#CA8A04',
+                            glow: '#FFE57F'
+                        },
+                        cosmic: {
+                            deep: '#030014',
+                            card: 'rgba(15, 10, 38, 0.65)',
+                            border: 'rgba(212, 175, 55, 0.25)',
+                            accent: '#8B5CF6'
+                        }
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Tone.js for Ambient Audio Synthesizer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
+    <style>
+        body {
+            background-color: #030014;
+            color: #f3f4f6;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        .glass-panel {
+            background: rgba(15, 10, 38, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-card {
+            background: rgba(20, 14, 48, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            transition: all 0.4s ease;
+        }
+
+        @media (min-width: 768px) {
+            .glass-card:hover {
+                border-color: rgba(255, 215, 0, 0.5);
+                box-shadow: 0 0 30px rgba(234, 179, 8, 0.25);
+                transform: translateY(-8px);
+            }
+        }
+
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #FFF5C0 0%, #EAB308 50%, #B45309 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glow-gold {
+            box-shadow: 0 0 25px rgba(234, 179, 8, 0.35);
+        }
+
+        .glow-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #cosmic-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030014;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2e1065;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-200 selection:bg-gold-500 selection:text-black">
+
+    <!-- Cosmic Background Canvas -->
+    <canvas id="cosmic-canvas"></canvas>
+
+    <!-- Glowing Background Orbs -->
+    <div class="glow-circle w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] bg-purple-900/30 top-[-50px] left-[-50px]"></div>
+    <div class="glow-circle w-[350px] h-[350px] sm:w-[600px] sm:h-[600px] bg-amber-600/15 bottom-0 right-[-50px]"></div>
+
+    <!-- Navigation Bar -->
+    <header class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-gold-500/20 px-4 sm:px-6 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2.5 group">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full p-[1px] bg-gradient-to-tr from-gold-600 via-amber-400 to-yellow-200 glow-gold flex items-center justify-center overflow-hidden shrink-0">
+                    <img src="1063.png" alt="ÖzFrekans Logo" class="w-full h-full object-cover rounded-full">
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-cinzel text-base sm:text-xl font-bold tracking-widest text-gold-gradient leading-none mb-1">ÖZFREKANS</span>
+                    <span class="text-[9px] sm:text-[10px] tracking-widest text-gray-400 uppercase">Ahmet Akgöz</span>
+                </div>
+            </a>
+
+            <!-- Ambient Sound Toggle & Contact -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                <button id="audio-toggle" class="px-3 sm:px-4 py-2 rounded-full border border-gold-500/30 bg-purple-950/40 text-[11px] sm:text-xs text-gold-300 flex items-center gap-1.5 hover:border-gold-400 transition-all shadow-lg backdrop-blur-md">
+                    <i data-lucide="volume-x" id="audio-icon" class="w-3.5 h-3.5 text-gold-400 shrink-0"></i>
+                    <span id="audio-text" class="hidden xs:inline sm:inline">432 Hz Modu</span>
+                </button>
+                <a href="#contact" class="hidden md:flex px-5 py-2 rounded-full bg-gradient-to-r from-gold-600 to-amber-500 text-black font-semibold text-xs tracking-wider uppercase hover:opacity-90 transition-all glow-gold">
+                    İletişim
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center pt-28 pb-16 px-4 text-center overflow-hidden">
+        <div class="max-w-4xl mx-auto z-10 w-full">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border border-gold-500/30 mb-6 sm:mb-8">
+                <i data-lucide="compass" class="w-3.5 h-3.5 text-gold-400 shrink-0"></i>
+                <span class="text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest text-gold-300 font-medium">Bütünsel Yaşam & Kozmik Farkındalık</span>
+            </div>
+
+            <!-- Main Title -->
+            <h1 class="font-cinzel text-3xl xs:text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-4 sm:mb-6 leading-tight">
+                <span class="block text-white drop-shadow-lg">ÖZFREKANS</span>
+                <span class="block text-xl xs:text-2xl sm:text-3xl md:text-4xl text-gold-gradient mt-2 font-normal">Ahmet Akgöz</span>
+            </h1>
+
+            <!-- Slogan Card -->
+            <div class="my-6 sm:my-8 max-w-2xl mx-auto glass-panel p-4 sm:p-6 rounded-2xl border border-gold-500/30 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-gold-500/10 via-transparent to-purple-500/10 opacity-50"></div>
+                <p class="font-cinzel text-base xs:text-lg sm:text-2xl text-amber-100 tracking-wide font-medium relative z-10 leading-relaxed px-2">
+                    "Evreni Anla. Kendini Keşfet. Yaşama Anlam Kat."
+                </p>
+            </div>
+
+            <p class="text-gray-300 text-sm sm:text-lg max-w-xl mx-auto font-light leading-relaxed mb-8 sm:mb-10 px-2">
+                Enerji, düşünce gücü ve manevi idrak ekseninde kendi öz titreşiminizi yükseltin. Bilimin ve hikmetin ışığında içsel yolculuğunuza başlayın.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full max-w-md sm:max-w-none mx-auto px-4">
+                <a href="#pillars" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-gold-600 via-amber-500 to-gold-400 text-black font-bold tracking-wider text-xs sm:text-sm uppercase shadow-2xl hover:scale-105 transition-transform flex items-center justify-center gap-2 glow-gold">
+                    <i data-lucide="eye" class="w-4 h-4"></i>
+                    Alanları Keşfet
+                </a>
+                <a href="tel:05467748688" class="w-full sm:w-auto px-7 py-3.5 rounded-xl glass-panel border border-gold-500/40 text-gold-300 hover:text-white font-semibold tracking-wider text-xs sm:text-sm uppercase hover:bg-gold-500/10 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="phone-call" class="w-4 h-4 text-gold-400"></i>
+                    Bize Ulaşın
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Pillars Section (3 Ana Sütun) -->
+    <section id="pillars" class="py-16 sm:py-24 px-4 relative z-10 max-w-7xl mx-auto">
+        <div class="text-center mb-12 sm:mb-16">
+            <h2 class="font-cinzel text-2xl sm:text-4xl font-bold text-gold-gradient mb-3">Üç Ana İçerik Sütunumuz</h2>
+            <div class="w-20 sm:w-24 h-1 bg-gradient-to-r from-transparent via-gold-500 to-transparent mx-auto rounded-full"></div>
+            <p class="text-gray-400 mt-4 max-w-lg mx-auto text-xs sm:text-base px-2">
+                Zihinsel, ruhsal ve evrensel bütünlüğü yakalamanız için tasarlanmış temel rehberlik alanlarımız.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <!-- EVREN -->
+            <div class="glass-card rounded-2xl p-6 sm:p-8 relative group flex flex-col justify-between">
+                <div>
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-600/30 to-indigo-900/50 border border-purple-500/30 flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="orbit" class="w-7 h-7 sm:w-8 sm:h-8 text-purple-400"></i>
+                    </div>
+                    <span class="text-[11px] uppercase font-semibold text-purple-400 tracking-widest block mb-2">1. Sütun</span>
+                    <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-white mb-3">EVREN</h3>
+                    <p class="text-gray-300 text-xs sm:text-sm leading-relaxed mb-6 font-light">
+                        Enerji, titreşim, frekans ve kozmoloji. Evrenin görünmeyen matematiğini ve fizik ötesi yasalarını keşfederek kendi enerjinizi hizalayın.
+                    </p>
+                </div>
+                <div class="border-t border-purple-500/20 pt-4 flex items-center justify-between text-xs text-purple-300">
+                    <span>Rezonans & Frekans</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </div>
+            </div>
+
+            <!-- DÜŞÜNCE -->
+            <div class="glass-card rounded-2xl p-6 sm:p-8 relative group flex flex-col justify-between border-gold-500/30">
+                <div>
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-amber-600/30 to-yellow-900/50 border border-gold-500/40 flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="brain" class="w-7 h-7 sm:w-8 sm:h-8 text-gold-400"></i>
+                    </div>
+                    <span class="text-[11px] uppercase font-semibold text-gold-400 tracking-widest block mb-2">2. Sütun</span>
+                    <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-gold-gradient mb-3">DÜŞÜNCE</h3>
+                    <p class="text-gray-300 text-xs sm:text-sm leading-relaxed mb-6 font-light">
+                        İnsan zihni, düşünce alışkanlıkları ve farkındalık. Zihnin çalışma mekanizmasını çözerek olumsuz kalıplardan özgürleşin.
+                    </p>
+                </div>
+                <div class="border-t border-gold-500/20 pt-4 flex items-center justify-between text-xs text-gold-300">
+                    <span>Zihinsel Dönüşüm</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </div>
+            </div>
+
+            <!-- MANEVİYAT -->
+            <div class="glass-card rounded-2xl p-6 sm:p-8 relative group flex flex-col justify-between">
+                <div>
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-emerald-600/30 to-teal-900/50 border border-emerald-500/30 flex items-center justify-center mb-5 sm:mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="heart-handshake" class="w-7 h-7 sm:w-8 sm:h-8 text-emerald-400"></i>
+                    </div>
+                    <span class="text-[11px] uppercase font-semibold text-emerald-400 tracking-widest block mb-2">3. Sütun</span>
+                    <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-white mb-3">MANEVİYAT</h3>
+                    <p class="text-gray-300 text-xs sm:text-sm leading-relaxed mb-6 font-light">
+                        Allah, yaratılış, şükür, iç huzur ve yaşamın anlamı. Kalbin sükunetini bulacağı derin bir idrak ve teslimiyet yolculuğu.
+                    </p>
+                </div>
+                <div class="border-t border-emerald-500/20 pt-4 flex items-center justify-between text-xs text-emerald-300">
+                    <span>Kalbi İdrak</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Günün Frekans Kartı -->
+    <section class="py-12 sm:py-16 px-4 max-w-4xl mx-auto relative z-10">
+        <div class="glass-panel rounded-3xl p-6 sm:p-12 text-center border border-gold-500/30 relative overflow-hidden shadow-2xl">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-gold-500/10 rounded-full blur-3xl"></div>
+            
+            <i data-lucide="sparkles" class="w-8 h-8 sm:w-10 sm:h-10 text-gold-400 mx-auto mb-3 animate-bounce"></i>
+            <h2 class="font-cinzel text-xl sm:text-3xl font-bold text-white mb-2">Günün Özfrekans Mesajı</h2>
+            <p class="text-gray-400 text-xs sm:text-sm mb-6 sm:mb-8">Zihninizi ve ruhunuzu bugünün yüksek rezonansına uyumlayın.</p>
+
+            <div id="frequency-card-box" class="glass-card p-5 sm:p-8 rounded-2xl border border-gold-500/20 mb-6 sm:mb-8 min-h-[140px] flex flex-col items-center justify-center">
+                <p id="card-text" class="font-cinzel text-base sm:text-xl text-amber-200 italic mb-3 px-2">
+                    "Düşünceleriniz evrene gönderdiğiniz davetiyelerdir. Bugün şükür frekansında kalın."
+                </p>
+                <span id="card-tag" class="text-[11px] sm:text-xs text-gold-400 font-semibold uppercase tracking-widest bg-gold-500/10 px-3 py-1 rounded-full border border-gold-500/20">
+                    528 Hz • Dönüşüm & Şükür
+                </span>
+            </div>
+
+            <button id="draw-card-btn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold text-xs tracking-wider uppercase hover:opacity-90 transition-all flex items-center justify-center gap-2 mx-auto shadow-lg">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                Yeni Kart Çek
+            </button>
+        </div>
+    </section>
+
+    <!-- İletişim & Alt Bilgi -->
+    <section id="contact" class="py-16 sm:py-20 px-4 relative z-10 border-t border-gold-500/20 bg-cosmic-deep/90 backdrop-blur-xl">
+        <div class="max-w-5xl mx-auto text-center">
+            
+            <h2 class="font-cinzel text-2xl sm:text-3xl font-bold text-gold-gradient mb-3">Bizimle İletişime Geçin</h2>
+            <p class="text-gray-400 text-xs sm:text-sm max-w-md mx-auto mb-10 px-2">
+                Sorularınız, seans talepleriniz ve iş birlikleri için doğrudan bana ulaşabilirsiniz.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto mb-12 sm:mb-16">
+                <!-- Phone -->
+                <a href="tel:05467748688" class="glass-card p-5 sm:p-6 rounded-2xl flex items-center gap-4 hover:border-gold-400 transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center group-hover:bg-gold-500 group-hover:text-black transition-colors shrink-0">
+                        <i data-lucide="phone" class="w-5 h-5 text-gold-400 group-hover:text-black"></i>
+                    </div>
+                    <div class="text-left overflow-hidden">
+                        <span class="text-[10px] text-gray-400 uppercase tracking-widest block">Telefon</span>
+                        <span class="font-semibold text-sm sm:text-base text-white group-hover:text-gold-300 transition-colors truncate block">(0546) 774 86 88</span>
+                    </div>
+                </a>
+
+                <!-- Email -->
+                <a href="mailto:ozfrekans01@gmail.com" class="glass-card p-5 sm:p-6 rounded-2xl flex items-center gap-4 hover:border-gold-400 transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center group-hover:bg-gold-500 group-hover:text-black transition-colors shrink-0">
+                        <i data-lucide="mail" class="w-5 h-5 text-gold-400 group-hover:text-black"></i>
+                    </div>
+                    <div class="text-left overflow-hidden">
+                        <span class="text-[10px] text-gray-400 uppercase tracking-widest block">E-Posta</span>
+                        <span class="font-semibold text-xs sm:text-sm text-white group-hover:text-gold-300 transition-colors truncate block">ozfrekans01@gmail.com</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="border-t border-gray-800 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+                <p>© 2026 ÖZFREKANS - Ahmet Akgöz. Tüm hakları saklıdır.</p>
+                <div class="flex items-center gap-6">
+                    <a href="#pillars" class="hover:text-gold-400 transition-colors">Evren</a>
+                    <a href="#pillars" class="hover:text-gold-400 transition-colors">Düşünce</a>
+                    <a href="#pillars" class="hover:text-gold-400 transition-colors">Maneviyat</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- JavaScript & Interactive Modules -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Canvas Ambient Particle System
+        const canvas = document.getElementById('cosmic-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const particles = [];
+        const particleCount = window.innerWidth < 768 ? 40 : 80;
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.8 + 0.2,
+                alpha: Math.random() * 0.8 + 0.2,
+                speedX: (Math.random() - 0.5) * 0.3,
+                speedY: (Math.random() - 0.5) * 0.3
+            });
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(234, 179, 8, ${p.alpha})`;
+                ctx.fill();
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // 432 Hz Ambient Audio Synthesizer (Tone.js)
+        let isPlaying = false;
+        let synth = null;
+
+        const audioBtn = document.getElementById('audio-toggle');
+        const audioIcon = document.getElementById('audio-icon');
+        const audioText = document.getElementById('audio-text');
+
+        audioBtn.addEventListener('click', async () => {
+            if (!isPlaying) {
+                await Tone.start();
+                synth = new Tone.OmniOscillator({
+                    frequency: 432,
+                    type: "sine"
+                }).toDestination();
+                
+                synth.volume.value = -28;
+                synth.start();
+
+                isPlaying = true;
+                audioText.innerText = "Durdur";
+                audioBtn.classList.add('border-gold-400', 'bg-gold-500/20');
+            } else {
+                if (synth) {
+                    synth.stop();
+                    synth.dispose();
+                }
+                isPlaying = false;
+                audioText.innerText = "432 Hz Modu";
+                audioBtn.classList.remove('border-gold-400', 'bg-gold-500/20');
+            }
+        });
+
+        // Frequency Card Drawer Data
+        const cards = [
+            {
+                quote: '"Düşünceleriniz evrene gönderdiğiniz davetiyelerdir. Bugün şükür frekansında kalın."',
+                tag: '528 Hz • Dönüşüm & Şükür'
+            },
+            {
+                quote: '"Zihin dinginleştiğinde, kalbin rehberliği duyulmaya başlar."',
+                tag: '432 Hz • İçsel Huzur'
+            },
+            {
+                quote: '"Niyetiniz tohum, inancınız sudur. Yaratılışın akışına güvenin."',
+                tag: '639 Hz • Uyum & Bağlantı'
+            },
+            {
+                quote: '"Her zerre bir düzen içinde hareket eder. Sizin de yaşamınızda tesadüf yoktur."',
+                tag: '741 Hz • Farkındalık'
+            },
+            {
+                quote: '"Şükür, sahip olduğunuz nimetleri artıran en yüksek frekanstır."',
+                tag: '963 Hz • Yüksek Bilinç'
+            }
+        ];
+
+        const drawBtn = document.getElementById('draw-card-btn');
+        const cardText = document.getElementById('card-text');
+        const cardTag = document.getElementById('card-tag');
+
+        drawBtn.addEventListener('click', () => {
+            const randomIndex = Math.floor(Math.random() * cards.length);
+            const card = cards[randomIndex];
+
+            cardText.style.opacity = '0';
+            cardTag.style.opacity = '0';
+
+            setTimeout(() => {
+                cardText.innerText = card.quote;
+                cardTag.innerText = card.tag;
+                cardText.style.opacity = '1';
+                cardTag.style.opacity = '1';
+            }, 300);
+        });
+    </script>
+</body>
+</html>
