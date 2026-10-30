@@ -52,7 +52,6 @@
             overflow-x: hidden;
         }
 
-        /* Glassmorphism Styles */
         .glass-panel {
             background: rgba(15, 10, 38, 0.6);
             backdrop-filter: blur(16px);
@@ -74,20 +73,12 @@
             transform: translateY(-8px);
         }
 
-        /* Gold Gradient Text */
         .text-gold-gradient {
             background: linear-gradient(135deg, #FFF5C0 0%, #EAB308 50%, #B45309 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .text-cosmic-gradient {
-            background: linear-gradient(135deg, #C084FC 0%, #E879F9 50%, #38BDF8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Glowing Effects */
         .glow-gold {
             box-shadow: 0 0 25px rgba(234, 179, 8, 0.35);
         }
@@ -100,7 +91,6 @@
             z-index: 0;
         }
 
-        /* Canvas Overlay */
         #cosmic-canvas {
             position: fixed;
             top: 0;
@@ -111,7 +101,6 @@
             pointer-events: none;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -127,7 +116,7 @@
 </head>
 <body class="font-sans antialiased text-gray-200 selection:bg-gold-500 selection:text-black">
 
-    <!-- Dynamic Interactive Cosmic Background Canvas -->
+    <!-- Cosmic Background Canvas -->
     <canvas id="cosmic-canvas"></canvas>
 
     <!-- Glowing Background Orbs -->
@@ -136,13 +125,12 @@
     <div class="glow-circle w-[400px] h-[400px] bg-indigo-900/30 top-[40%] left-[30%]"></div>
 
     <!-- Navigation Bar -->
-    <header class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-gold-500/20 px-6 py-4">
+    <header class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-gold-500/20 px-6 py-3">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <a href="#" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-gold-600 via-amber-400 to-yellow-200 p-[1px] flex items-center justify-center glow-gold">
-                    <div class="w-full h-full bg-cosmic-deep rounded-full flex items-center justify-center">
-                        <i data-lucide="sparkles" class="w-5 h-5 text-gold-400 group-hover:rotate-45 transition-transform duration-500"></i>
-                    </div>
+                <!-- Logomuz -->
+                <div class="w-11 h-11 rounded-full p-[1px] bg-gradient-to-tr from-gold-600 via-amber-400 to-yellow-200 glow-gold flex items-center justify-center overflow-hidden">
+                    <img src="1063.png" alt="ÖzFrekans Logo" class="w-full h-full object-cover rounded-full">
                 </div>
                 <div class="flex flex-col">
                     <span class="font-cinzel text-xl font-bold tracking-widest text-gold-gradient">ÖZFREKANS</span>
@@ -150,7 +138,7 @@
                 </div>
             </a>
 
-            <!-- Ambient Sound Toggle Button -->
+            <!-- Ambient Sound Toggle & Contact -->
             <div class="flex items-center gap-4">
                 <button id="audio-toggle" class="px-4 py-2 rounded-full border border-gold-500/30 bg-purple-950/40 text-xs text-gold-300 flex items-center gap-2 hover:border-gold-400 transition-all shadow-lg backdrop-blur-md">
                     <i data-lucide="volume-x" id="audio-icon" class="w-4 h-4 text-gold-400"></i>
@@ -214,8 +202,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            <!-- Pillar 1: EVREN -->
+            <!-- EVREN -->
             <div class="glass-card rounded-2xl p-8 relative group flex flex-col justify-between">
                 <div>
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600/30 to-indigo-900/50 border border-purple-500/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -233,7 +220,7 @@
                 </div>
             </div>
 
-            <!-- Pillar 2: DÜŞÜNCE -->
+            <!-- DÜŞÜNCE -->
             <div class="glass-card rounded-2xl p-8 relative group flex flex-col justify-between border-gold-500/30">
                 <div>
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-600/30 to-yellow-900/50 border border-gold-500/40 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -251,7 +238,7 @@
                 </div>
             </div>
 
-            <!-- Pillar 3: MANEVİYAT -->
+            <!-- MANEVİYAT -->
             <div class="glass-card rounded-2xl p-8 relative group flex flex-col justify-between">
                 <div>
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-600/30 to-teal-900/50 border border-emerald-500/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -268,11 +255,10 @@
                     <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-2 transition-transform"></i>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <!-- Günün Frekans Kartı (Interactive Card Generator) -->
+    <!-- Günün Frekans Kartı -->
     <section class="py-16 px-4 max-w-4xl mx-auto relative z-10">
         <div class="glass-panel rounded-3xl p-8 sm:p-12 text-center border border-gold-500/30 relative overflow-hidden shadow-2xl">
             <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-gold-500/10 rounded-full blur-3xl"></div>
@@ -297,7 +283,7 @@
         </div>
     </section>
 
-    <!-- İletişim & Alt Bilgi (Contact & Footer) -->
+    <!-- İletişim & Alt Bilgi -->
     <section id="contact" class="py-20 px-4 relative z-10 border-t border-gold-500/20 bg-cosmic-deep/80 backdrop-blur-xl">
         <div class="max-w-5xl mx-auto text-center">
             
@@ -377,4 +363,99 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             particles.forEach(p => {
-                p.x += p.spee
+                p.x += p.speedX;
+                p.y += p.speedY;
+
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(234, 179, 8, ${p.alpha})`;
+                ctx.fill();
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // 432 Hz Ambient Audio Synthesizer (Tone.js)
+        let isPlaying = false;
+        let synth = null;
+
+        const audioBtn = document.getElementById('audio-toggle');
+        const audioIcon = document.getElementById('audio-icon');
+        const audioText = document.getElementById('audio-text');
+
+        audioBtn.addEventListener('click', async () => {
+            if (!isPlaying) {
+                await Tone.start();
+                synth = new Tone.OmniOscillator({
+                    frequency: 432,
+                    type: "sine"
+                }).toDestination();
+                
+                synth.volume.value = -28;
+                synth.start();
+
+                isPlaying = true;
+                audioText.innerText = "432 Hz Aktif (Durdur)";
+                audioBtn.classList.add('border-gold-400', 'bg-gold-500/20');
+            } else {
+                if (synth) {
+                    synth.stop();
+                    synth.dispose();
+                }
+                isPlaying = false;
+                audioText.innerText = "432 Hz Modunu Başlat";
+                audioBtn.classList.remove('border-gold-400', 'bg-gold-500/20');
+            }
+        });
+
+        // Frequency Card Drawer Data
+        const cards = [
+            {
+                quote: '"Düşünceleriniz evrene gönderdiğiniz davetiyelerdir. Bugün şükür frekansında kalın."',
+                tag: '528 Hz • Dönüşüm & Şükür'
+            },
+            {
+                quote: '"Zihin dinginleştiğinde, kalbin rehberliği duyulmaya başlar."',
+                tag: '432 Hz • İçsel Huzur'
+            },
+            {
+                quote: '"Niyetiniz tohum, inancınız sudur. Yaratılışın akışına güvenin."',
+                tag: '639 Hz • Uyum & Bağlantı'
+            },
+            {
+                quote: '"Her zerre bir düzen içinde hareket eder. Sizin de yaşamınızda tesadüf yoktur."',
+                tag: '741 Hz • Farkındalık'
+            },
+            {
+                quote: '"Şükür, sahip olduğunuz nimetleri artıran en yüksek frekanstır."',
+                tag: '963 Hz • Yüksek Bilinç'
+            }
+        ];
+
+        const drawBtn = document.getElementById('draw-card-btn');
+        const cardText = document.getElementById('card-text');
+        const cardTag = document.getElementById('card-tag');
+
+        drawBtn.addEventListener('click', () => {
+            const randomIndex = Math.floor(Math.random() * cards.length);
+            const card = cards[randomIndex];
+
+            cardText.style.opacity = '0';
+            cardTag.style.opacity = '0';
+
+            setTimeout(() => {
+                cardText.innerText = card.quote;
+                cardTag.innerText = card.tag;
+                cardText.style.opacity = '1';
+                cardTag.style.opacity = '1';
+            }, 300);
+        });
+    </script>
+</body>
+</html>
